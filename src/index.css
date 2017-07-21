@@ -1,0 +1,23 @@
+/* global */
+
+body,
+html, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+input {
+  font-size: 5vw;
+  border: none;
+  outline: none;
+  font-family: 'Roboto Mono', monospace;
+}
