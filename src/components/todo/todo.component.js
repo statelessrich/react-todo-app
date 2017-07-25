@@ -8,42 +8,91 @@ class Todo extends Component {
         super();
 
         this.state = {
-          items: []
+            todos: []
         };
 
-        this.onItemAdded = this.onItemAdded.bind(this);
-        this.onItemDeleted = this.onItemDeleted.bind(this);
-        this.onItemUpdated = this.onItemUpdated.bind(this);
+        this.onTodoAdded = this.onTodoAdded.bind(this);
+        this.onTodoDeleted = this.onTodoDeleted.bind(this);
+        this.onTodoUpdated = this.onTodoUpdated.bind(this);
+        this.setMouseOver = this.setMouseOver.bind(this);
+        this.setDone = this.setDone.bind(this);
     }
 
     render() {
         return (
             <section className="todo-container">
-                <NewTodo onItemAdded={this.onItemAdded} />
-                {this.state.items.length > 0 && <TodoList onItemDeleted={this.onItemDeleted} onItemUpdated={this.onItemUpdated} items={this.state.items}/>}
+                <NewTodo onTodoAdded={this.onTodoAdded}/>
+                {this.state.todos.length > 0 &&
+                <TodoList setDone={this.setDone} setMouseOver={this.setMouseOver} onTodoDeleted={this.onTodoDeleted}
+                          onTodoUpdated={this.onTodoUpdated} todos={this.state.todos}/>}
             </section>
         );
     }
 
-    onItemAdded(item) {
-        const newItems = this.state.items;
-        newItems.push(item);
-        this.setState({items: newItems});
+    /**
+     * Add TODO to list.
+     * @param todo New TODO.
+     */
+    onTodoAdded(todo) {
+        const newTodos = this.state.todos;
+        newTodos.push(todo);
+        this.setState({todos: newTodos});
     }
 
-    onItemDeleted(deletedItem) {
-        const newItems = this.state.items.filter(item => item.text !== deletedItem.text);
-        this.setState({items: newItems});
+    /**
+     * Delete TODO from list.
+     * @param index Index of TODO to delete.
+     */
+    onTodoDeleted(index) {
+        const newTodos = this.state.todos;
+        newTodos.splice(index, 1);
+
+        this.setState({todos: newTodos});
     }
 
-    onItemUpdated(oldItem, updatedItem) {
-        let {items} = this.state;
+    /**
+     * Update TODO in list.
+     * @param index Index of TODO to update.
+     * @param newTodo New value of TODO.
+     */
+    onTodoUpdated(index, newTodo) {
+        const todo = this.state.todos[index];
+        todo.text = newTodo;
 
-        let index = this.state.items.findIndex(item => item.text === oldItem.text);
-        items[index].text = updatedItem.text;
+        const todos = this.state.todos;
+        todos[index] = todo;
 
-        this.setState({items: items});
+        this.setState({todos: todos});
+    }
 
+    /**
+     * Set the mouseover state on TODO.
+     * @param index Index of TODO to update.
+     * @param mouseover Mouseover flag.
+     */
+    setMouseOver(index, mouseover) {
+        const todo = this.state.todos[index];
+        todo.mouseover = mouseover;
+
+        const todos = this.state.todos;
+        todos[index] = todo;
+
+        this.setState({todos: todos});
+    }
+
+    /**
+     * Sets a TODO to done.
+     * @param index Index of TODO to update.
+     * @param done Done flag.
+     */
+    setDone(index, done) {
+        const todo = this.state.todos[index];
+        todo.done = done;
+
+        const todos = this.state.todos;
+        todos[index] = todo;
+
+        this.setState({todos: todos});
     }
 }
 

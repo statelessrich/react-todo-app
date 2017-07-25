@@ -17,28 +17,34 @@ class NewTodo extends Component {
         this.addItem = this.addItem.bind(this);
     }
 
+    /**
+     * Update TODO state.
+     * @param event Event object.
+     */
     inputUpdated(event) {
         const {value} = event.target;
         this.setState({newItem: {text: value, done: false, mouseover: false}});
     }
 
+    /**
+     * Add TODO to list in parent state.
+     * @param event Event object.
+     */
     addItem(event) {
         event.preventDefault(); // Stay on page.
 
         const {newItem} = this.state;
-        const {onItemAdded} = this.props;  // Get parent method from props.
+        const {onTodoAdded} = this.props;  // Get parent method from props.
 
-        onItemAdded(newItem);
+        onTodoAdded(newItem);
 
         this.setState({newItem: {text: '', done: false, mouseover: false}}); // Reset new item.
     }
 
     render() {
-        const {onItemAdded} = this.props;
-
         return (
             <form onSubmit={this.state.newItem.text !== '' && this.addItem}>
-                {/*todo input*/}
+                {/*todo text input*/}
                 <input type="text"
                        placeholder="todo"
                        onInput={this.inputUpdated}
