@@ -4,51 +4,33 @@ import './new-todo.css';
 class NewTodo extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            newItem: {
-                text: '',
-                done: false,
-                mouseover: false
-            }
-        };
-
-        this.inputUpdated = this.inputUpdated.bind(this);
-        this.addItem = this.addItem.bind(this);
-    }
-
-    /**
-     * Update TODO state.
-     * @param event Event object.
-     */
-    inputUpdated(event) {
-        const {value} = event.target;
-        this.setState({newItem: {text: value, done: false, mouseover: false}});
+        this.addTodo = this.addTodo.bind(this);
     }
 
     /**
      * Add TODO to list in parent state.
      * @param event Event object.
+     * @param text Value of new TODO.
      */
-    addItem(event) {
+    addTodo(event, text) {
         event.preventDefault(); // Stay on page.
 
-        const {newItem} = this.state;
-        const {onTodoAdded} = this.props;  // Get parent method from props.
+        if (text === '') {
+            return;
+        }
 
-        onTodoAdded(newItem);
-
-        this.setState({newItem: {text: '', done: false, mouseover: false}}); // Reset new item.
+        this.props.onTodoAdded(text);
+        this.form.reset();
     }
 
     render() {
         return (
-            <form onSubmit={this.state.newItem.text !== '' && this.addItem}>
+            <form onSubmit={(e) => this.addTodo(e, this.input.value)}
+                  ref={(form) => this.form = form}>
                 {/*todo text input*/}
                 <input type="text"
                        placeholder="todo"
-                       onInput={this.inputUpdated}
-                       value={this.state.newItem.text}
+                       ref={(input) => this.input = input}
                        autoFocus/>
             </form>
         );

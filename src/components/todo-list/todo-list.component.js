@@ -2,35 +2,26 @@ import React, {Component} from 'react';
 import './todo-list.component.css';
 
 class TodoList extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            todos: this.props.todos
-        };
-    }
-
     render() {
-        const {todos} = this.state;
-
         return (
             <section>
-                {todos.map((item, index) =>
+                {this.props.todos.map((todo, index) =>
                     <section key={index} className="list" onMouseOver={() => this.setMouseOver(index, true)}
                              onMouseLeave={() => this.setMouseOver(index, false)}>
+
                         {/* checkbox */}
                         <section className="flex-container">
-                            <input className={"checkbox " + (item.mouseover ? "checkbox--visible" : "")} type="checkbox"
-                                   name="done" checked={item.done} onChange={(e) => this.onCheckboxChange(e, index)}/>
+                            <input className={"checkbox " + (todo.mouseover ? "checkbox--visible" : "")} type="checkbox"
+                                   name="done" checked={todo.done} onChange={(e) => this.onCheckboxChange(e, index)}/>
                         </section>
 
                         {/*todo value*/}
-                        <input className={"list__item " + (item.done ? "list__item--done" : "")} type="text"
-                               value={item.text} onChange={(e) => this.onChange(e, index)}/>
+                        <input className={"list__item " + (todo.done ? "list__item--done" : "")} type="text"
+                               value={todo.text} onChange={(e) => this.onChange(e, index)}/>
 
                         {/*delete button*/}
                         <section className="flex-container">
-                            <a className={"delete " + (item.mouseover ? "delete--visible" : "")}
+                            <a className={"delete " + (todo.mouseover ? "delete--visible" : "")}
                                onClick={() => this.onDelete(index)}>x</a>
                         </section>
                     </section>
@@ -40,13 +31,12 @@ class TodoList extends Component {
     }
 
     /**
-     * Set mouseover state.
+     * Set mouseover flag.
      * @param index Index of TODO to update.
      * @param mouseover Mouseover flag.
      */
     setMouseOver(index, mouseover) {
-        const {setMouseOver} = this.props;
-        setMouseOver(index, mouseover);
+        this.props.setMouseOver(index, mouseover);
     }
 
     /**
@@ -55,8 +45,7 @@ class TodoList extends Component {
      * @param index Index of TODO to update.
      */
     onCheckboxChange(event, index) {
-        const {setDone} = this.props;
-        setDone(index, event.target.checked);
+        this.props.setDone(index, event.target.checked);
     }
 
     /**
@@ -64,8 +53,7 @@ class TodoList extends Component {
      * @param index Index of TODO to delete.
      */
     onDelete(index) {
-        const {onTodoDeleted} = this.props;
-        onTodoDeleted(index);
+        this.props.onTodoDeleted(index);
     }
 
     /**
@@ -74,8 +62,7 @@ class TodoList extends Component {
      * @param index Index of TODO to update.
      */
     onChange(event, index) {
-        const {onTodoUpdated} = this.props;
-        onTodoUpdated(index, event.target.value);
+        this.props.onTodoUpdated(event.target.value, index);
     }
 }
 

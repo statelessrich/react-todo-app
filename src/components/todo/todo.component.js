@@ -1,15 +1,13 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import './todo.component.css';
-import NewTodo from "../new-todo/new-todo.component";
-import TodoList from "../todo-list/todo-list.component";
+import NewTodo from '../new-todo/new-todo.component';
+import TodoList from '../todo-list/todo-list.component';
+import * as todoActions from '../../actions/todo-actions';
 
 class Todo extends Component {
     constructor() {
         super();
-
-        this.state = {
-            todos: []
-        };
 
         this.onTodoAdded = this.onTodoAdded.bind(this);
         this.onTodoDeleted = this.onTodoDeleted.bind(this);
@@ -22,21 +20,19 @@ class Todo extends Component {
         return (
             <section className="todo-container">
                 <NewTodo onTodoAdded={this.onTodoAdded}/>
-                {this.state.todos.length > 0 &&
+                {this.props.todos.length > 0 &&
                 <TodoList setDone={this.setDone} setMouseOver={this.setMouseOver} onTodoDeleted={this.onTodoDeleted}
-                          onTodoUpdated={this.onTodoUpdated} todos={this.state.todos}/>}
+                          onTodoUpdated={this.onTodoUpdated} todos={this.props.todos}/>}
             </section>
         );
     }
 
     /**
      * Add TODO to list.
-     * @param todo New TODO.
+     * @param text New todo text.
      */
-    onTodoAdded(todo) {
-        const newTodos = this.state.todos;
-        newTodos.push(todo);
-        this.setState({todos: newTodos});
+    onTodoAdded(text) {
+        this.props.addTodo(text);
     }
 
     /**
@@ -44,10 +40,7 @@ class Todo extends Component {
      * @param index Index of TODO to delete.
      */
     onTodoDeleted(index) {
-        const newTodos = this.state.todos;
-        newTodos.splice(index, 1);
-
-        this.setState({todos: newTodos});
+        this.props.deleteTodo(index);
     }
 
     /**
@@ -55,14 +48,12 @@ class Todo extends Component {
      * @param index Index of TODO to update.
      * @param newTodo New value of TODO.
      */
-    onTodoUpdated(index, newTodo) {
-        const todo = this.state.todos[index];
-        todo.text = newTodo;
+    onTodoUpdated(text, index) {
+        const todo = this.props.todos[index];
+        const newTodo = Object.assign({}, todo);
+        newTodo.text = text;
 
-        const todos = this.state.todos;
-        todos[index] = todo;
-
-        this.setState({todos: todos});
+        this.props.updateTodo({index, newTodo});
     }
 
     /**
@@ -71,13 +62,11 @@ class Todo extends Component {
      * @param mouseover Mouseover flag.
      */
     setMouseOver(index, mouseover) {
-        const todo = this.state.todos[index];
-        todo.mouseover = mouseover;
+        const todo = this.props.todos[index];
+        const newTodo = Object.assign({}, todo);
+        newTodo.mouseover = mouseover;
 
-        const todos = this.state.todos;
-        todos[index] = todo;
-
-        this.setState({todos: todos});
+        this.props.updateTodo({index, newTodo});
     }
 
     /**
@@ -86,14 +75,29 @@ class Todo extends Component {
      * @param done Done flag.
      */
     setDone(index, done) {
-        const todo = this.state.todos[index];
-        todo.done = done;
+        const todo = this.props.todos[index];
+        const newTodo = Object.assign({}, todo);
+        newTodo.done = done;
 
-        const todos = this.state.todos;
-        todos[index] = todo;
-
-        this.setState({todos: todos});
+        this.props.updateTodo({index, newTodo});
     }
 }
 
-export default Todo;
+// Map state from store to props.
+const mapStateToProps = (state) => {
+    return {
+        todos: state.todos
+    };
+};
+
+// Map actions to props.
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addTodo: todo => dispatch(todoActions.addTodo(todo)),
+        deleteTodo: todo => dispatch(todoActions.deleteTodo(todo)),
+        updateTodo: todo => dispatch(todoActions.updateTodo(todo))
+    };
+};
+
+// Put store and actions together.
+export default connect(mapStateToProps, mapDispatchToProps)(Todo);
