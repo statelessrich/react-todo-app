@@ -22,11 +22,11 @@ export default (state = [], action) => {
         case 'UPDATE_TODO':
             // Return new array with updated todo.
             return todos.map((todo, index) => {
-                if (index !== action.todo.index) {
+                if (index !== action.payload.index) {
                     return todo;
                 }
 
-                return action.todo.newTodo;
+                return action.payload.newTodo;
             });
 
         default:
