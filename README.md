@@ -1,5 +1,5 @@
 # react-todo-app
-Minimalist todo app built with React, Redux, SASS, BEM.
+Minimalist todo app built with React, Redux, SASS, flexbox, BEM.
 
 On load:
 ![On load](/screens/load.png?raw=true?raw=true "On load")
